@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+
 <ion-header>
   <ion-navbar>
     <button ion-button menuToggle>
@@ -8,11 +10,56 @@
 </ion-header>
 
 <ion-content padding>
-  <h3>Ionic Menu Starter</h3>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-6>
+        <h3>Lat: {{locationTracker.lat}}</h3>
+      </ion-col>
+      <ion-col col-6>
+        <h3>Lng: {{locationTracker.lng}}</h3>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-6>
+        <h3>Total Distance: {{locationTracker.distance}}</h3>
+      </ion-col>
+    </ion-row>
 
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will show you the way.
-  </p>
+    <ion-row>
+      <ion-col col-4>
+        <h3>X: {{locationTracker.currentacceleration[0]}}</h3>
+      </ion-col>
+      <ion-col col-4>
+        <h3>Y: {{locationTracker.currentacceleration[1]}}</h3>
+      </ion-col>
+      <ion-col col-4>
+        <h3 [ngClass]="{'color-red': locationTracker.currentacceleration[2] > locationTracker.accelerationlimit}">Z: {{locationTracker.currentacceleration[2]}}</h3>
+      </ion-col>
+    </ion-row>
 
-  <button ion-button secondary menuToggle>Toggle Menu</button>
+    <ion-row>
+      <ion-col col-4>
+        <h3>routeid: {{locationTracker.routeiterator}}</h3>
+      </ion-col>
+      <ion-col col-4>
+        <h3>pointid: {{locationTracker.pointiterator}}</h3>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-6>
+        <h3>Velocity: {{locationTracker.speed}}</h3>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+  <button ion-button  (click)="start()">Start Tracking</button>
+  <button ion-button (click)="stop()">Stop Tracking</button>
+
+  <div id="map"></div>
+
+  <button ion-button  (click)="segnala()">Segnala</button>
+
+
+
 </ion-content>

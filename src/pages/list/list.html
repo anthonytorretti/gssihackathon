@@ -8,16 +8,18 @@
 </ion-header>
 
 <ion-content>
+
   <ion-list>
-    <button ion-item *ngFor="let item of items" (click)="itemTapped($event, item)">
-      <ion-icon [name]="item.icon" item-left></ion-icon>
-      {{item.title}}
-      <div class="item-note" item-right>
-        {{item.note}}
-      </div>
+
+    <button ion-item *ngFor="let item of camera.data; let i=index" (click)="openModal(camera.data[i])">
+      <ion-thumbnail item-start>
+        <img [src]="item[0]" *ngIf="item[0]" />
+      </ion-thumbnail>
+      <p>latitudine: {{ item [1] }}</p>
+      <p>longitudine: {{ item [2] }}</p>
+
+
     </button>
   </ion-list>
-  <div *ngIf="selectedItem" padding>
-    You navigated here from <b>{{selectedItem.title}}</b>
-  </div>
+
 </ion-content>
