@@ -125,7 +125,7 @@ private frequency=40;
 
     let time=data.length*this.frequency;
 
-    let zscores=arr.zScores(zacc);
+    //let zscores=arr.zScores(zacc);
 
 
     let exposure= this.numerical_int(this.frequency,zacc);

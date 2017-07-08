@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { LocationTrackerProvider } from '../../providers/location-tracker/location-tracker';
-import { CameraProvider} from '../../providers/camera/camera';
 import { ModalController } from 'ionic-angular';
 import { ModalPage } from '../modal/modal';
 
@@ -12,7 +11,7 @@ import { ModalPage } from '../modal/modal';
 export class ListPage {
 
 
-  constructor(public navCtrl: NavController,private modalCtrl:ModalController, private camera:CameraProvider,public navParams: NavParams,public locationTracker: LocationTrackerProvider) {
+  constructor(public navCtrl: NavController,private modalCtrl:ModalController,public navParams: NavParams,public locationTracker: LocationTrackerProvider) {
 
   }
 

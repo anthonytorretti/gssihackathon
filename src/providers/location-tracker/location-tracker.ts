@@ -3,7 +3,7 @@ import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import { DeviceMotion, DeviceMotionAccelerationData } from '@ionic-native/device-motion';
-import { LatLng, Polyline, PolylineOptions,MarkerOptions,Marker} from '@ionic-native/google-maps';
+import { LatLng, PolylineOptions,MarkerOptions} from '@ionic-native/google-maps';
 import { GooglesnapProvider } from '../../providers/googlesnap/googlesnap';
 import { ExpcalculusProvider } from '../../providers/expcalculus/expcalculus';
 import { GeojsonProvider } from '../../providers/geojson/geojson';
@@ -194,7 +194,7 @@ export class LocationTrackerProvider {
       icon: { url : './assets/dot.png' }
     };
 
-    let marker: Marker = this.map.addMarker(markerOptions);
+    this.map.addMarker(markerOptions);
 
 
 
@@ -238,7 +238,7 @@ export class LocationTrackerProvider {
 
 
     for (let i=0;i<this.polylines.length;i++){
-      let polyline: Polyline = this.map.addPolyline(this.polylines[i]);
+      this.map.addPolyline(this.polylines[i]);
     }
 
 
@@ -278,7 +278,7 @@ export class LocationTrackerProvider {
       width: 20
     };
 
-    let polyline: Polyline = this.map.addPolyline(polyoptions);
+   this.map.addPolyline(polyoptions);
 
     this.polylines.push(polyoptions);
 

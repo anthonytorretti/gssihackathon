@@ -1,7 +1,7 @@
 import { Component} from '@angular/core';
-import { NavController, Platform } from 'ionic-angular';
+import { NavController} from 'ionic-angular';
 import { LocationTrackerProvider } from '../../providers/location-tracker/location-tracker';
-import { GoogleMaps, GoogleMap, GoogleMapsEvent, LatLng, CameraPosition, MarkerOptions, Marker} from '@ionic-native/google-maps';
+import { GoogleMaps, GoogleMap, GoogleMapsEvent, LatLng, CameraPosition} from '@ionic-native/google-maps';
 import { CameraProvider} from '../../providers/camera/camera';
 
 @Component({
@@ -11,7 +11,7 @@ import { CameraProvider} from '../../providers/camera/camera';
 export class HomePage {
   map2:GoogleMap;
   map:GoogleMap;
-  constructor(public navCtrl: NavController,private camera:CameraProvider, private googlemaps2: GoogleMaps,private googlemaps: GoogleMaps, public locationTracker: LocationTrackerProvider) {
+  constructor(public navCtrl: NavController,private camera:CameraProvider,private googlemaps: GoogleMaps, public locationTracker: LocationTrackerProvider) {
 
   }
 
