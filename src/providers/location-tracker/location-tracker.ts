@@ -7,16 +7,18 @@ import { LatLng, PolylineOptions,MarkerOptions} from '@ionic-native/google-maps'
 import { GooglesnapProvider } from '../../providers/googlesnap/googlesnap';
 import { ExpcalculusProvider } from '../../providers/expcalculus/expcalculus';
 import { GeojsonProvider } from '../../providers/geojson/geojson';
-
+import { File } from '@ionic-native/file';
 /*
   Generated class for the LocationTrackerProvider provider.
 
   See https://angular.io/docs/ts/latest/guide/dependency-injection.html
   for more info on providers and Angular DI.
 */
+
 @Injectable()
 export class LocationTrackerProvider {
 
+  public fileclose=false;
   public routeiterator=1;
   public pointiterator=1;
   public map;
@@ -57,14 +59,24 @@ export class LocationTrackerProvider {
   public firststart:boolean = true;
   public restart:boolean= true;
 
+  public filename;
 
 
 
-  constructor(public zone: NgZone,private geojson: GeojsonProvider,private deviceMotion: DeviceMotion,private googlesnap: GooglesnapProvider,private expcalc: ExpcalculusProvider ) {
+  constructor(public file: File,public zone: NgZone,private geojson: GeojsonProvider,private deviceMotion: DeviceMotion,private googlesnap: GooglesnapProvider,private expcalc: ExpcalculusProvider ) {
     console.log('Hello LocationTrackerProvider Provider');
   }
 
     startTracking(map) {
+      this.fileclose=false;
+      var d = new Date();
+      var n = d.getTime();
+      this.filename=n+".json";
+
+      this.file.createFile(this.file.externalDataDirectory, this.filename, false);
+      let openstring='{"type":"FeatureCollection","crs":{ "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } }, "features": [';
+      this.file.writeFile(this.file.externalDataDirectory,this.filename,openstring,{append: true, replace: false});
+
 
     this.map=map;
     this.firststart=true;
@@ -164,7 +176,13 @@ export class LocationTrackerProvider {
     this.firststart=true;
     this.map.clear();
 
+    this.fileclose=true;
     this.savedata();
+
+
+
+
+
 
   }
 
@@ -235,8 +253,6 @@ export class LocationTrackerProvider {
 
   savedata(){
 
-
-
     for (let i=0;i<this.polylines.length;i++){
       this.map.addPolyline(this.polylines[i]);
     }
@@ -264,7 +280,7 @@ export class LocationTrackerProvider {
     this.googlesnap.load(parameters)
       .then(data => {
 
-          this.geojson.addtogeojson(data,exposure);
+          this.geojson.addtogeojson(data,exposure,this.filename,this.fileclose);
 
       });
 

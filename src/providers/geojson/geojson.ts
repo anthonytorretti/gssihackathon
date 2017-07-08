@@ -13,14 +13,16 @@ import { File } from '@ionic-native/file';
 export class GeojsonProvider {
   public fileswritten=0;
   public alldata=[];
-
+  public time
   constructor(public http: Http,public file:File) {
+
+
     console.log('Hello GeojsonProvider Provider');
 
 
   }
 
-  addtogeojson(puntigoogle,exposure){
+  addtogeojson(puntigoogle,exposure,filename,fileclose){
 
     let placeid= puntigoogle.snappedPoints[0].placeId;
 
@@ -40,12 +42,26 @@ export class GeojsonProvider {
     };
 
 
+
     this.alldata.push(georow);
     let jsonstring=JSON.stringify(georow) + ",";
 
-    this.file.createFile(this.file.externalDataDirectory, 'data.txt', false);
-    this.file.writeFile(this.file.externalDataDirectory,'data.txt',jsonstring,{append: true, replace: false})
+
+
+
     this.fileswritten+=1;
+
+    if(fileclose==true){
+
+      this.file.createFile(this.file.externalDataDirectory, filename, false);
+      this.file.writeFile(this.file.externalDataDirectory,filename,jsonstring+"]}",{append: true, replace: false});
+
+    }
+    else{
+      this.file.createFile(this.file.externalDataDirectory, filename, false);
+      this.file.writeFile(this.file.externalDataDirectory,filename,jsonstring,{append: true, replace: false});
+    }
+
 
   }
 
