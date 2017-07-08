@@ -4,7 +4,7 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Letture</ion-title>
+    <ion-title>Letture scritte {{written}}</ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -15,9 +15,9 @@
 
     <ion-item *ngFor="let item of data">
 
-      <p>latitudine: {{ item.lat }}</p>
-      <p>longitudine: {{ item.lng }}</p>
-      <p>Z: {{ item.accelerometer[2] }}</p>
+      <p>Geo: {{ item.geometry }}</p>
+      <p>PlaceId: {{ item.properties.placeid }}</p>
+      <p>Expoure: {{ item.properties.exposure }}</p>
 
 
     </ion-item>

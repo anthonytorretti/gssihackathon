@@ -6,7 +6,7 @@ import { DeviceMotion, DeviceMotionAccelerationData } from '@ionic-native/device
 import { LatLng} from '@ionic-native/google-maps';
 import { GooglesnapProvider } from '../../providers/googlesnap/googlesnap';
 import { ExpcalculusProvider } from '../../providers/expcalculus/expcalculus';
-import { } from '../../providers/geo'
+import { GeojsonProvider } from '../../providers/geojson/geojson';
 
 /*
   Generated class for the LocationTrackerProvider provider.
@@ -45,6 +45,7 @@ export class LocationTrackerProvider {
 
 
   public points = [];
+  public mappoints =[];
   public speed:number =0;
 
   public data=[];
@@ -52,10 +53,10 @@ export class LocationTrackerProvider {
   public firststart:boolean = true;
   public restart:boolean= true;
 
-  public file;
-public fullstring="";
 
-  constructor(public zone: NgZone,private deviceMotion: DeviceMotion,private googlesnap: GooglesnapProvider,private expcalc: ExpcalculusProvider ) {
+
+
+  constructor(public zone: NgZone,private geojson: GeojsonProvider,private deviceMotion: DeviceMotion,private googlesnap: GooglesnapProvider,private expcalc: ExpcalculusProvider ) {
     console.log('Hello LocationTrackerProvider Provider');
   }
 
@@ -119,10 +120,10 @@ public fullstring="";
         }
 
         if(this.distance<=this.maxdistance){
-          if(partialdistance<5) {
+            this.mappoints.push([this.lat, this.lng]);
             this.points.push([this.lat, this.lng]);
             this.updatemap();
-          }
+
 
         }
 
@@ -218,7 +219,7 @@ public fullstring="";
     this.data=[];
 
     let parameters="";
-    for (var i=0;i<this.points.length;i++){
+    for (let i=0;i<this.points.length;i++){
 
       if(i!=this.points.length-1) {
 
@@ -228,11 +229,12 @@ public fullstring="";
         parameters+=this.points[i].toString();
     }
 
-    this.expcalc.calculateexp(tempdata);
+    let exposure=this.expcalc.calculateexp(tempdata);
 
     this.googlesnap.load(parameters)
       .then(data => {
 
+          this.geojson.addtogeojson(data,exposure);
 
       });
     this.points=[];

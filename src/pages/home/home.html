@@ -42,7 +42,7 @@
         <h3>routeid: {{locationTracker.routeiterator}}</h3>
       </ion-col>
       <ion-col col-4>
-        <h3>pointid: {{locationTracker.pointiterator}}</h3>
+        <h3>pointid: {{locationTracker.points.length}}</h3>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -56,7 +56,15 @@
   <button ion-button  (click)="start()">Start Tracking</button>
   <button ion-button (click)="stop()">Stop Tracking</button>
 
-  <div id="map"></div>
+
+
+  <div id="wrapper">
+    <div id="map"></div>
+
+      <div id="map2"></div>
+
+  </div>
+
 
   <button ion-button  (click)="segnala()">Segnala</button>
 

@@ -10,7 +10,7 @@ import 'rxjs/add/operator/map';
 */
 @Injectable()
 export class GooglesnapProvider {
-
+  public retry=0;
   public data=null;
   public apikey="AIzaSyCtroxu5U6vJvGehJxOHVtb1NXXl0xyrbU";
   public parameters="";
@@ -25,7 +25,7 @@ export class GooglesnapProvider {
 
     this.dataurl="https://roads.googleapis.com/v1/snapToRoads?path="+parameters+"&interpolate=true&key="+this.apikey;
     //this.dataurl="https://roads.googleapis.com/v1/snapToRoads?path=-35.27801,149.12958|-35.28032,149.12907|-35.28099,149.12929|-35.28144,149.12984|-35.28194,149.13003|-35.28282,149.12956|-35.28302,149.12881|-35.28473,149.12836&interpolate=true&key="+this.apikey;
-    alert(this.dataurl);
+    //alert(this.dataurl);
 
     return new Promise(resolve => {
       this.http.get(this.dataurl)
@@ -36,13 +36,22 @@ export class GooglesnapProvider {
             this.data = data;
             console.log(data);
             //alert(data.snappedPoints[0].placeId);
+          this.retry=0;
             resolve(this.data);
 
 
           },
           error => {
-            alert(JSON.stringify(error.json()));
+          if(this.retry<4) {
+            this.retry += 1;
+            this.load(parameters);
+          }
+          else {
+            this.retry=0;
+
+            alert("Error snap to road");
             console.log(JSON.stringify(error.json()));
+          }
           }
         );
 
