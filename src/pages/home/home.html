@@ -5,68 +5,87 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Home</ion-title>
+    <ion-title>Tracking</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <ion-grid>
+ <ion-grid>
     <ion-row>
-      <ion-col col-6>
-        <h3>Lat: {{locationTracker.lat}}</h3>
+
+      <ion-col col-12>
+        <ion-card>
+          <ion-card-content>
+            <h3>Latitude: {{locationTracker.lat}}</h3>
+            <h3>Longitude: {{locationTracker.lng}}</h3>
+          </ion-card-content>
+        </ion-card>
       </ion-col>
-      <ion-col col-6>
-        <h3>Lng: {{locationTracker.lng}}</h3>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col col-6>
-        <h3>Total Distance: {{locationTracker.distance}}</h3>
-      </ion-col>
+
     </ion-row>
 
     <ion-row>
-      <ion-col col-4>
-        <h3>X: {{locationTracker.currentacceleration[0]}}</h3>
+
+
+
+      <ion-col col-12>
+        <ion-card>
+          <ion-card-content>
+            <h3 [ngClass]="{'color-text-red': locationTracker.roadstate == 'Attenzione' > locationTracker.accelerationlimit}">Bumpiness: {{locationTracker.currentacceleration[2]}}</h3>
+
+          </ion-card-content>
+        </ion-card>
       </ion-col>
-      <ion-col col-4>
-        <h3>Y: {{locationTracker.currentacceleration[1]}}</h3>
-      </ion-col>
-      <ion-col col-4>
-        <h3 [ngClass]="{'color-red': locationTracker.currentacceleration[2] > locationTracker.accelerationlimit}">Z: {{locationTracker.currentacceleration[2]}}</h3>
-      </ion-col>
+
     </ion-row>
 
-    <ion-row>
-      <ion-col col-4>
-        <h3>routeid: {{locationTracker.routeiterator}}</h3>
-      </ion-col>
-      <ion-col col-4>
-        <h3>pointid: {{locationTracker.points.length}}</h3>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col col-6>
-        <h3>Velocity: {{locationTracker.speed}}</h3>
-      </ion-col>
-    </ion-row>
+
+    <!--<ion-row>-->
+      <!--<ion-col col-4>-->
+        <!--<h3>X: {{locationTracker.currentacceleration[0]}}</h3>-->
+      <!--</ion-col>-->
+      <!--<ion-col col-4>-->
+        <!--<h3>Y: {{locationTracker.currentacceleration[1]}}</h3>-->
+      <!--</ion-col>-->
+
+    <!--</ion-row>-->
+
+    <!--<ion-row>-->
+      <!--<ion-col col-4>-->
+        <!--<h3>routeid: {{locationTracker.routeiterator}}</h3>-->
+      <!--</ion-col>-->
+      <!--<ion-col col-4>-->
+        <!--<h3>pointid: {{locationTracker.points.length}}</h3>-->
+      <!--</ion-col>-->
+    <!--</ion-row>-->
+    <!--<ion-row>-->
+      <!--<ion-col col-6>-->
+        <!--<h3>Velocity: {{locationTracker.speed}}</h3>-->
+      <!--</ion-col>-->
+    <!--</ion-row>-->
 
   </ion-grid>
 
-  <button ion-button  (click)="start()">Start Tracking</button>
-  <button ion-button (click)="stop()">Stop Tracking</button>
+  <button ion-button color="secondary" [ngClass]="{'color-red': locationTracker.roadstate == 'Attenzione'}"  full>{{locationTracker.roadstate}}</button>
 
 
 
-  <div id="wrapper">
-    <div id="map"></div>
 
-      <div id="map2"></div>
+  <div id="map"></div>
 
-  </div>
+<ion-grid>
+
+  <ion-row>
+    <ion-col col-8>
+      <button ion-button class="large"  [ngClass]="{'color-green': locationTracker.enable_reading == true}" (click)="(toggle())">{{locationTracker.buttontext}}</button>
+    </ion-col>
+    <ion-col col-4>
+      <button ion-button class="large" (click)="segnala()">Segnala</button>
+    </ion-col>
+  </ion-row>
+</ion-grid>
 
 
-  <button ion-button  (click)="segnala()">Segnala</button>
 
 
 

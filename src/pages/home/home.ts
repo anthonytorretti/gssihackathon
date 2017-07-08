@@ -11,7 +11,7 @@ import { CameraProvider} from '../../providers/camera/camera';
 export class HomePage {
   map2:GoogleMap;
   map:GoogleMap;
-  constructor(public navCtrl: NavController,private camera:CameraProvider, private googlemaps: GoogleMaps, public locationTracker: LocationTrackerProvider) {
+  constructor(public navCtrl: NavController,private camera:CameraProvider, private googlemaps2: GoogleMaps,private googlemaps: GoogleMaps, public locationTracker: LocationTrackerProvider) {
 
   }
 
@@ -19,17 +19,14 @@ export class HomePage {
     console.log('ionViewDidLoad Maps');
     setTimeout(() => {
       this.loadMap();
-      this.loadMap2();
+
     }, 1000)
   }
 
-  start(){
-    this.locationTracker.startTracking(this.map);
+  toggle(){
+    this.locationTracker.toggletrack(this.map);
   }
 
-  stop(){
-    this.locationTracker.stopTracking();
-  }
 
   segnala(){
     let lat=this.locationTracker.lat;
@@ -63,32 +60,5 @@ export class HomePage {
     );
   }
 
-    loadMap2(){
 
-      let element: HTMLElement = document.getElementById('map2');
-
-      this.map2 = this.googlemaps.create(element);
-
-
-
-      this.map2.one(GoogleMapsEvent.MAP_READY).then(
-        () => {
-
-          let ionic: LatLng = new LatLng(this.locationTracker.lat,this.locationTracker.lng);
-
-          // create CameraPosition
-          let position: CameraPosition = {
-            target: ionic,
-            zoom: 14,
-            tilt: 30
-          };
-
-          this.map2.moveCamera(position);
-          // Now you can add elements to the map like the marker
-        }
-      );
-
-
-
- }
 }

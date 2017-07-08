@@ -16,27 +16,43 @@
 <ion-content padding>
 
 
-    <ion-item>
-      <h2>Località: L'Aquila</h2>
-      <p>Data: {{data[3]}}</p>
-    </ion-item>
+        <ion-card>
+          <ion-card-content>
+            <h2>Località: L'Aquila</h2>
+            <p>Data: {{data[3]}}</p>
+          </ion-card-content>
+        </ion-card>
 
-    <img [src]="data[0]">
-    <ion-card-content>
-      <p>Lat: {{data[1]}}</p>
-      <p>Lng: {{data[2]}}</p>
-    </ion-card-content>
+        <img [src]="data[0]">
+
+        <ion-card>
+          <ion-card-content>
+            <ion-grid>
+              <ion-row>
+                <ion-col col-6>
+                  <p>Lat: {{data[1]}}</p>
+
+                </ion-col>
+
+                <ion-col col-6>
+                  <p>Lng: {{data[2]}}</p>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+
 
     <ion-row>
-      <ion-col>
-        <button ion-button icon-left>
+      <ion-col col-6>
+        <button ion-button class="large" icon-left>
           <ion-icon name="md-share"></ion-icon>
           <div>share</div>
         </button>
       </ion-col>
 
-      <ion-col>
-        <button ion-button color="light" (click)="dismiss()" icon-start>
+      <ion-col col-6>
+        <button ion-button  class="large" color="light" (click)="dismiss()" icon-start>
           <ion-icon name='arrow-back'></ion-icon>
           Back
         </button>

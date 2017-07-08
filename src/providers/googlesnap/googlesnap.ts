@@ -49,7 +49,7 @@ export class GooglesnapProvider {
           else {
             this.retry=0;
 
-            alert("Error snap to road");
+
             console.log(JSON.stringify(error.json()));
           }
           }

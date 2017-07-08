@@ -3,7 +3,7 @@ import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import { DeviceMotion, DeviceMotionAccelerationData } from '@ionic-native/device-motion';
-import { LatLng} from '@ionic-native/google-maps';
+import { LatLng, Polyline, PolylineOptions,MarkerOptions,Marker} from '@ionic-native/google-maps';
 import { GooglesnapProvider } from '../../providers/googlesnap/googlesnap';
 import { ExpcalculusProvider } from '../../providers/expcalculus/expcalculus';
 import { GeojsonProvider } from '../../providers/geojson/geojson';
@@ -21,6 +21,9 @@ export class LocationTrackerProvider {
   public pointiterator=1;
   public map;
   public accelerometer;
+  public polylines=[];
+  public roadstate="OK";
+  public buttontext="Start Tracking";
 
   frequency=40;
 
@@ -35,9 +38,9 @@ export class LocationTrackerProvider {
   public lngold: number = 0;
 
 
-  public currentacceleration=[];
+  public currentacceleration=[0,0,0];
   public accelerometerdata=[];
-  public accelerationlimit=3;
+  public accelerationlimit=0.7;
 
 
   public distance: number = 0;
@@ -47,6 +50,7 @@ export class LocationTrackerProvider {
   public points = [];
   public mappoints =[];
   public speed:number =0;
+  public minspeed:number=10;
 
   public data=[];
 
@@ -71,6 +75,7 @@ export class LocationTrackerProvider {
         this.currentacceleration = [acceleration.x, acceleration.y, acceleration.z-9.81];
         this.accelerometerdata.push(this.currentacceleration);
         this.pointiterator += 1;
+        this.updateroadstate(acceleration.z-9.81);
         this.addreading();
       }
     });
@@ -107,35 +112,39 @@ export class LocationTrackerProvider {
           this.speed =position.coords.speed;
         }
 
+        this.updatemap();
 
-        let partialdistance= this.getdistance(this.lat, this.lng,this.latold,this.lngold,"MT");
+        if(this.enable_reading) {
+          let partialdistance = this.getdistance(this.lat, this.lng, this.latold, this.lngold, "MT");
 
-        this.distance=this.distance+partialdistance;
+          this.distance = this.distance + partialdistance;
 
-        //IF TRACKING RESTARTED
-        if(this.distance==0 && this.restart){
+          //IF TRACKING RESTARTED
+          if (this.distance == 0 && this.restart) {
 
-          this.pointiterator=1;
-          this.restart=false;
-        }
+            this.pointiterator = 1;
+            this.restart = false;
+          }
 
-        if(this.distance<=this.maxdistance){
-            this.mappoints.push([this.lat, this.lng]);
+          if (this.distance <= this.maxdistance) {
+
+            this.mappoints.push({lat: this.lat, lng: this.lng});
             this.points.push([this.lat, this.lng]);
             this.updatemap();
 
 
-        }
+          }
 
-        //REACHED MAX DISTANCE FOR SEGMENT
-        else{
+          //REACHED MAX DISTANCE FOR SEGMENT
+          else {
 
-          this.routeiterator+=1;
-          this.map.clear();
-          this.distance=0;
+            this.routeiterator += 1;
+            this.map.clear();
+            this.distance = 0;
 
-          this.savedata();
-          this.restart=true;
+            this.savedata();
+            this.restart = true;
+          }
         }
       });
 
@@ -179,10 +188,23 @@ export class LocationTrackerProvider {
 
     this.map.setCenter(location);
     this.map.setZoom(18);
-    this.map.addMarker({
+
+    let markerOptions: MarkerOptions = {
       position: location,
       icon: { url : './assets/dot.png' }
-      });
+    };
+
+    let marker: Marker = this.map.addMarker(markerOptions);
+
+
+
+
+    // this.map.addMarker({
+    //   position: location,
+    //   icon: { url : './assets/dot.png' }
+    //   });
+    //
+    // this.map.marker
 
   }
 
@@ -212,6 +234,14 @@ export class LocationTrackerProvider {
   }
 
   savedata(){
+
+
+
+    for (let i=0;i<this.polylines.length;i++){
+      let polyline: Polyline = this.map.addPolyline(this.polylines[i]);
+    }
+
+
     if(this.speed==null)
       this.speed=0;
 
@@ -237,8 +267,85 @@ export class LocationTrackerProvider {
           this.geojson.addtogeojson(data,exposure);
 
       });
+
+    let colorline=this.RainBowColor(exposure);
+
+
+    let polyoptions: PolylineOptions = {
+      points:this.mappoints,
+      geodesic: true,
+      color: colorline,
+      width: 20
+    };
+
+    let polyline: Polyline = this.map.addPolyline(polyoptions);
+
+    this.polylines.push(polyoptions);
+
+
+
+    // this.map.addPolyline({
+    //   points:this.mappoints,
+    //   geodesic: true,
+    //   color: '#FF0000',
+    //   width: 2
+    // });
+
+    let lastmappoint=this.mappoints[this.mappoints.length-1];
+    this.mappoints=[];
+    this.mappoints.push(lastmappoint);
     this.points=[];
   }
 
+ RainBowColor(length)
 
+{
+
+  let value=this.convertToRange(length,[0,3],[0,1]);
+
+
+  var i = (value * 255 / 255);
+  var r = Math.abs(Math.round(Math.cos(90 -(90*i) )*255));
+  var g = Math.abs(Math.round(Math.sin(90 -(90*i) )*255));
+  var b = 0;
+
+  return 'rgb(' + r + ',' + g + ',' + b + ')';
+}
+
+  convertToRange(value, srcRange, dstRange){
+    // value is outside source range return
+    if (value < srcRange[0] || value > srcRange[1]){
+      return NaN;
+    }
+
+    let srcMax = srcRange[1] - srcRange[0],
+      dstMax = dstRange[1] - dstRange[0],
+      adjValue = value - srcRange[0];
+
+    return (adjValue * dstMax / srcMax) + dstRange[0];
+
+  }
+
+  updateroadstate(acceleration){
+
+
+    if (acceleration<this.accelerationlimit){
+      this.roadstate="OK";
+    }
+
+    else if (acceleration>this.accelerationlimit){
+      this.roadstate="Attenzione";
+    }
+}
+
+  toggletrack(map){
+    if(this.enable_reading){
+      this.stopTracking();
+      this.buttontext="Start Tracking";
+    }
+    else {
+      this.startTracking(map)
+      this.buttontext = "Stop Tracking";
+    }
+  }
 }
