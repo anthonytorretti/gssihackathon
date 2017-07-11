@@ -13,6 +13,11 @@ page-home {
     height:130px;
   }
 
+  .blink-yellow{
+    animation: blinker 1s linear infinite;
+    background-color: #cccc00 !important;
+  }
+
   .color-red{
 
     background-color:red;

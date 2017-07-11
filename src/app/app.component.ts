@@ -6,6 +6,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import { LetturePage } from '../pages/letture/letture';
+import {LocationTrackerProvider} from '../providers/location-tracker/location-tracker';
 
 @Component({
   templateUrl: 'app.html'
@@ -17,7 +18,7 @@ export class MyApp {
 
   pages: Array<{title: string, component: any}>;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
+  constructor(public locationtracker: LocationTrackerProvider,public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
@@ -42,5 +43,17 @@ export class MyApp {
     // Reset the content nav to have just this page
     // we wouldn't want the back button to show in this scenario
     this.nav.setRoot(page.component);
+  }
+
+  menuOpened() {
+    this.locationtracker.map.setClickable(false);
+
+    //code to execute when menu ha opened
+  }
+
+  menuClosed() {
+    this.locationtracker.map.setClickable(true);
+
+    //code to execute when menu ha opened
   }
 }

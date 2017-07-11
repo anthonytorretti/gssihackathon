@@ -62,7 +62,6 @@ export class GeojsonProvider {
       this.file.writeFile(this.file.externalDataDirectory,filename,jsonstring,{append: true, replace: false});
     }
 
-
   }
 
 

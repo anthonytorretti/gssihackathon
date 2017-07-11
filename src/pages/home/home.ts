@@ -42,6 +42,7 @@ export class HomePage {
     this.map = this.googlemaps.create(element);
 
 
+
     this.map.one(GoogleMapsEvent.MAP_READY).then(
       () => {
 
@@ -55,6 +56,7 @@ export class HomePage {
         };
 
         this.map.moveCamera(position);
+        this.map.setClickable(false);
         // Now you can add elements to the map like the marker
       }
     );

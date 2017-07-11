@@ -42,7 +42,7 @@ export class LocationTrackerProvider {
 
   public currentacceleration=[0,0,0];
   public accelerometerdata=[];
-  public accelerationlimit=0.7;
+  public accelerationlimit=0.6;
 
 
   public distance: number = 0;
@@ -51,8 +51,8 @@ export class LocationTrackerProvider {
 
   public points = [];
   public mappoints =[];
-  public speed:number =0;
-  public minspeed:number=10;
+  public speed:number =10;
+  public minspeed:number=5;
 
   public data=[];
 
@@ -69,6 +69,7 @@ export class LocationTrackerProvider {
 
     startTracking(map) {
       this.fileclose=false;
+
       var d = new Date();
       var n = d.getTime();
       this.filename=n+".json";
@@ -79,16 +80,22 @@ export class LocationTrackerProvider {
 
 
     this.map=map;
+    this.map.setClickable(true);
     this.firststart=true;
 
 
     this.accelerometer = this.deviceMotion.watchAcceleration({frequency:this.frequency}).subscribe((acceleration: DeviceMotionAccelerationData) => {
       if(this.enable_reading) {
-        this.currentacceleration = [acceleration.x, acceleration.y, acceleration.z-9.81];
-        this.accelerometerdata.push(this.currentacceleration);
-        this.pointiterator += 1;
-        this.updateroadstate(acceleration.z-9.81);
-        this.addreading();
+        if(this.speed>this.minspeed) {
+          this.currentacceleration = [acceleration.x, acceleration.y, acceleration.z - 9.81];
+          this.accelerometerdata.push(this.currentacceleration);
+          this.pointiterator += 1;
+          this.updateroadstate(acceleration.z - 9.81);
+          this.addreading();
+        }
+        else{
+          this.roadstate = "Paused For Low Speed";
+        }
       }
     });
 
@@ -114,6 +121,7 @@ export class LocationTrackerProvider {
           this.lng = this.lngold;
           this.speed =position.coords.speed;
           this.firststart = false;
+          this.updatemap();
         }
 
         else{
@@ -124,9 +132,10 @@ export class LocationTrackerProvider {
           this.speed =position.coords.speed;
         }
 
-        this.updatemap();
 
-        if(this.enable_reading) {
+
+        if(this.enable_reading && this.speed>this.minspeed) {
+          alert(this.speed);
           let partialdistance = this.getdistance(this.lat, this.lng, this.latold, this.lngold, "MT");
 
           this.distance = this.distance + partialdistance;
@@ -284,7 +293,7 @@ export class LocationTrackerProvider {
 
       });
 
-    let colorline=this.RainBowColor(exposure);
+    let colorline=this.Routecolor(exposure);
 
 
     let polyoptions: PolylineOptions = {
@@ -293,6 +302,7 @@ export class LocationTrackerProvider {
       color: colorline,
       width: 20
     };
+
 
    this.map.addPolyline(polyoptions);
 
@@ -313,8 +323,25 @@ export class LocationTrackerProvider {
     this.points=[];
   }
 
- RainBowColor(length)
 
+ Routecolor(exposure){
+    if (exposure>1.5)
+     return "#ff0000";
+    else if (exposure>1.2)
+      return "#ff4000";
+    else if (exposure>0.9)
+      return "#ff8000";
+    else if (exposure>0.7)
+      return "#ffbf00";
+    else if (exposure>0.5)
+      return "#bfff00";
+    else if (exposure>0.4)
+      return "#40ff00";
+    else
+      return "#00ff00";
+ }
+
+ RainBowColor(length)
 {
 
   let value=this.convertToRange(length,[0,3],[0,1]);

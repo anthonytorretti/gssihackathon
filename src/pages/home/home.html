@@ -66,7 +66,7 @@
 
   </ion-grid>
 
-  <button ion-button color="secondary" [ngClass]="{'color-red': locationTracker.roadstate == 'Attenzione'}"  full>{{locationTracker.roadstate}}</button>
+  <button ion-button color="secondary" [ngClass]="{'color-red': locationTracker.roadstate == 'Attenzione','blink-yellow':locationTracker.speed<locationTracker.minspeed}"  full>{{locationTracker.roadstate}}</button>
 
 
 
@@ -80,7 +80,7 @@
       <button ion-button class="large"  [ngClass]="{'color-green': locationTracker.enable_reading == true}" (click)="(toggle())">{{locationTracker.buttontext}}</button>
     </ion-col>
     <ion-col col-4>
-      <button ion-button class="large" (click)="segnala()">Segnala</button>
+      <button ion-button class="large" (click)="segnala()">Report</button>
     </ion-col>
   </ion-row>
 </ion-grid>
